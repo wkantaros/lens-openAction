@@ -42,12 +42,22 @@ export const Create = () => {
     // getCommonSignatureFromString: this is more flexible for ppl who want to pass
     //                               in arbitrary function signatures / no dropdown
     const nftSignature: string = getCommonSignatureFromString(nftType);
+
+    // our encoded abi parameters
     const encodedInitData = encodeAbiParameters(
       [
+        // contract address of call (i.e. your nft address)
         { type: 'address' },
+        // the payment token for the action (i.e.mint) zeroAddress if cost is native or free
         { type: 'address' },
+        // chainId of that contract (137 if your nft is on polygon, 10 if op, etc)
+        // can use ChainId enum from @decent.xyz/box-common for convenience
         { type: 'uint256' },
+        // cost of the function call (0 if free)
         { type: 'uint256' },
+        // the function signature
+        // i.e. 'function mint(address to, uint256 numberOfTokens)'
+        // note: can use getCommonSignatureFromString to simplify process
         { type: 'bytes' },
       ],
       [
@@ -60,6 +70,7 @@ export const Create = () => {
     );
 
     const actionModulesInitDatas = [encodedInitData];
+    // get the decent open action
     const actionModules = [uiConfig.decentOpenActionContractAddress];
     if (freeCollect) {
       const baseFeeCollectModuleTypes = [
