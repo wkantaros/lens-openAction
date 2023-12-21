@@ -34,9 +34,12 @@ const ActionBox = ({
   const [createState, setCreateState] = useState<string | undefined>();
   const [txHash, setTxHash] = useState<string | undefined>();
   const { data: walletClient } = useWalletClient();
+
+  // we can fetch the params needed to call getActionArgs from the post itself
   const [contract, token, dstChain, cost, signature] = fetchParams(post)!;
-  console.log(contract, token, dstChain, cost, signature);
   const dstChainId = parseInt(dstChain.toString());
+
+  // call this hook from @decent.xyz/box-hooks to get the actionModuleData
   const getActionArgs: UseBoxActionArgs = {
     actionType: ActionType.LensOpenAction,
     actionConfig: {
@@ -59,13 +62,13 @@ const ActionBox = ({
     dstChainId: dstChainId,
   };
 
-  // what to call
+  // response w everything needed to call open action
   const resp = useBoxAction(getActionArgs);
 
   const executeDecentOA = async (post: PostCreatedEventFormatted) => {
     if (!resp || resp.isLoading) return;
-    console.log('post!', post);
-    console.log('mf', resp);
+
+    // get the actionModuleData from response
     const encodedActionData = resp.actionResponse!.arbitraryData.lensActionData;
 
     const args = {
@@ -86,11 +89,7 @@ const ActionBox = ({
 
     setCreateState('PENDING IN WALLET');
     try {
-      console.log(
-        'approval token',
-        resp.actionResponse?.tokenPayment?.tokenAddress,
-        uiConfig.wMatic
-      );
+      // approve token (always WMATIC for now but will be more flexible later)
       if (
         resp.actionResponse?.tokenPayment?.tokenAddress &&
         resp.actionResponse.tokenPayment.tokenAddress != zeroAddress
@@ -108,9 +107,10 @@ const ActionBox = ({
             spender: uiConfig.decentOpenActionContractAddress,
             amount: resp.actionResponse?.tokenPayment?.amount || 0n,
           });
-          console.log('approved!', approveHash);
+          setCreateState('APPROVING TOKEN');
           if (!approveHash) {
             console.log('not approved!');
+            setCreateState('');
             return;
           }
           const approveResult = await publicClient({
@@ -119,7 +119,6 @@ const ActionBox = ({
           console.log('approved!', approveResult);
         }
       }
-      console.log('here!', walletClient);
       const hash = await walletClient!.sendTransaction({
         to: uiConfig.lensHubProxyAddress,
         account: address,

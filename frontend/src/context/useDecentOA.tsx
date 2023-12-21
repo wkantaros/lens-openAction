@@ -119,6 +119,7 @@ export const DecentOAProvider: FC<DecentOAProviderProps> = ({ children }) => {
       );
     }
 
+    // filtering out 2 open actions I misconfigured
     const allPostEvents = Array.from(postEventsMap.values()).filter(
       (x) => x.args.pubId != '8' && x.args.pubId != '6'
     );
