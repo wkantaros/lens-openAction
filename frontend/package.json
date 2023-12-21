@@ -10,21 +10,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@decent.xyz/box-common": "../decent.xyz-box-common-1.0.8.tgz",
+    "@decent.xyz/box-hooks": "./decent.xyz-box-hooks-1.0.44.tgz",
     "@lens-protocol/metadata": "^1.0.0",
     "@lens-protocol/react-web": "^2.0.0-alpha.22",
     "@lens-protocol/wagmi": "^3.0.0-alpha.19",
     "@radix-ui/react-slot": "^1.0.2",
-    "@web3modal/wagmi": "^3.2.0",
+    "@web3modal/wagmi": "^3.5.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "connectkit": "^1.5.3",
     "lucide-react": "^0.291.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "swr": "^2.2.4",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "^1.17.2",
-    "wagmi": "^1.4.5"
+    "viem": "^1.20.3",
+    "wagmi": "^1.4.12"
   },
   "devDependencies": {
     "@types/node": "^20.8.10",

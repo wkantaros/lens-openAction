@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useLensHelloWorld } from "../context/LensHelloWorldContext";
-import { uiConfig } from "../utils/constants";
+import { useState } from 'react';
+import { uiConfig } from '../utils/constants';
+import { useDecentOA } from '@/context/DecentOAContext';
 
 export const Events = () => {
   const [filterOwnEvents, setFilterOwnEvents] = useState(false);
-  const { greetings, loading, address } = useLensHelloWorld();
+  const { initEvents, loading, address } = useDecentOA();
 
   let filteredEvents = filterOwnEvents
-    ? greetings.filter((greet) => greet.args.actor === address)
-    : greetings;
+    ? initEvents.filter((greet) => greet.args.transactionExecutor === address)
+    : initEvents;
 
   filteredEvents = filteredEvents.sort((a, b) => {
     const blockNumberA = parseInt(a.blockNumber, 10);

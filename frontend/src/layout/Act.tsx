@@ -1,16 +1,23 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { usePublications } from "@lens-protocol/react-web";
-import { useState } from "react";
-import { encodeAbiParameters, encodeFunctionData, zeroAddress } from "viem";
-import { useWalletClient } from "wagmi";
-import { useLensHelloWorld } from "../context/LensHelloWorldContext";
-import { publicClient } from "../main";
-import { mode, uiConfig } from "../utils/constants";
-import { fetchInitMessage } from "../utils/fetchInitMessage";
-import { lensHubAbi } from "../utils/lensHubAbi";
-import { serializeLink } from "../utils/serializeLink";
-import { PostCreatedEventFormatted } from "../utils/types";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import {
+  encodeAbiParameters,
+  encodeFunctionData,
+  formatUnits,
+  zeroAddress,
+} from 'viem';
+import { useWalletClient } from 'wagmi';
+import { publicClient } from '../main';
+import { currChainId, mode, uiConfig } from '../utils/constants';
+import { lensHubAbi } from '../utils/lensHubAbi';
+import { serializeLink } from '../utils/serializeLink';
+import { PostCreatedEventFormatted } from '../utils/types';
+import { useDecentOA } from '@/context/DecentOAContext';
+import { fetchParams } from '@/utils/fetchParams';
+import { ActionType } from '@decent.xyz/box-common';
+import { UseBoxActionArgs, useBoxAction } from '@decent.xyz/box-hooks';
+import { approveToken, getAllowance } from '@/tokenUtils';
 //import { ProfileId } from "@lens-protocol/metadata";
 
 const ActionBox = ({
@@ -24,19 +31,42 @@ const ActionBox = ({
   profileId?: number;
   refresh: () => void;
 }) => {
-  const [actionText, setActionText] = useState<string>("");
   const [createState, setCreateState] = useState<string | undefined>();
   const [txHash, setTxHash] = useState<string | undefined>();
   const { data: walletClient } = useWalletClient();
+  const [contract, token, dstChain, cost, signature] = fetchParams(post)!;
+  console.log(contract, token, dstChain, cost, signature);
+  const dstChainId = parseInt(dstChain.toString());
+  const getActionArgs: UseBoxActionArgs = {
+    actionType: ActionType.LensOpenAction,
+    actionConfig: {
+      functionCall: 'processPublicationAction',
+      pubId: post.args.pubId,
+      contractAddress: contract,
+      chainId: dstChainId,
+      cost: {
+        isNative: true,
+        amount: cost,
+      },
+      signature,
+      args: [address, 1n],
+    },
+    srcChainId: currChainId,
+    sender: address!,
+    slippage: 3, // 1%
+    srcToken: uiConfig.wMatic,
+    dstToken: token,
+    dstChainId: dstChainId,
+  };
 
-  const executeHelloWorld = async (
-    post: PostCreatedEventFormatted,
-    actionText: string
-  ) => {
-    const encodedActionData = encodeAbiParameters(
-      [{ type: "string" }],
-      [actionText]
-    );
+  // what to call
+  const resp = useBoxAction(getActionArgs);
+
+  const executeDecentOA = async (post: PostCreatedEventFormatted) => {
+    if (!resp || resp.isLoading) return;
+    console.log('post!', post);
+    console.log('mf', resp);
+    const encodedActionData = resp.actionResponse!.arbitraryData.lensActionData;
 
     const args = {
       publicationActedProfileId: BigInt(post.args.postParams.profileId || 0),
@@ -44,33 +74,67 @@ const ActionBox = ({
       actorProfileId: BigInt(profileId || 0),
       referrerProfileIds: [],
       referrerPubIds: [],
-      actionModuleAddress: uiConfig.openActionContractAddress,
+      actionModuleAddress: uiConfig.decentOpenActionContractAddress,
       actionModuleData: encodedActionData as `0x${string}`,
     };
 
     const calldata = encodeFunctionData({
       abi: lensHubAbi,
-      functionName: "act",
+      functionName: 'act',
       args: [args],
     });
 
-    setCreateState("PENDING IN WALLET");
+    setCreateState('PENDING IN WALLET');
     try {
+      console.log(
+        'approval token',
+        resp.actionResponse?.tokenPayment?.tokenAddress,
+        uiConfig.wMatic
+      );
+      if (
+        resp.actionResponse?.tokenPayment?.tokenAddress &&
+        resp.actionResponse.tokenPayment.tokenAddress != zeroAddress
+      ) {
+        const amountApproved = await getAllowance({
+          user: address!,
+          spender: uiConfig.decentOpenActionContractAddress,
+          token: resp.actionResponse.tokenPayment.tokenAddress as `0x${string}`,
+        });
+        if (
+          amountApproved < (resp.actionResponse?.tokenPayment?.amount || 0n)
+        ) {
+          const approveHash = await approveToken({
+            token: uiConfig.wMatic,
+            spender: uiConfig.decentOpenActionContractAddress,
+            amount: resp.actionResponse?.tokenPayment?.amount || 0n,
+          });
+          console.log('approved!', approveHash);
+          if (!approveHash) {
+            console.log('not approved!');
+            return;
+          }
+          const approveResult = await publicClient({
+            chainId: currChainId,
+          }).waitForTransactionReceipt({ hash: approveHash });
+          console.log('approved!', approveResult);
+        }
+      }
+      console.log('here!', walletClient);
       const hash = await walletClient!.sendTransaction({
         to: uiConfig.lensHubProxyAddress,
         account: address,
         data: calldata as `0x${string}`,
       });
-      setCreateState("PENDING IN MEMPOOL");
+      setCreateState('PENDING IN MEMPOOL');
       setTxHash(hash);
       const result = await publicClient({
-        chainId: 80001,
+        chainId: currChainId,
       }).waitForTransactionReceipt({ hash });
-      if (result.status === "success") {
-        setCreateState("SUCCESS");
+      if (result.status === 'success') {
+        setCreateState('SUCCESS');
         refresh();
       } else {
-        setCreateState("CREATE TXN REVERTED");
+        setCreateState('CREATE TXN REVERTED');
       }
     } catch (e) {
       setCreateState(`ERROR: ${e instanceof Error ? e.message : String(e)}`);
@@ -79,8 +143,8 @@ const ActionBox = ({
 
   const executeCollect = async (post: PostCreatedEventFormatted) => {
     const baseFeeCollectModuleTypes = [
-      { type: "address" },
-      { type: "uint256" },
+      { type: 'address' },
+      { type: 'uint256' },
     ];
 
     const encodedBaseFeeCollectModuleInitData = encodeAbiParameters(
@@ -89,7 +153,7 @@ const ActionBox = ({
     );
 
     const encodedCollectActionData = encodeAbiParameters(
-      [{ type: "address" }, { type: "bytes" }],
+      [{ type: 'address' }, { type: 'bytes' }],
       [address!, encodedBaseFeeCollectModuleInitData]
     );
 
@@ -105,27 +169,27 @@ const ActionBox = ({
 
     const calldata = encodeFunctionData({
       abi: lensHubAbi,
-      functionName: "act",
+      functionName: 'act',
       args: [args],
     });
 
-    setCreateState("PENDING IN WALLET");
+    setCreateState('PENDING IN WALLET');
     try {
       const hash = await walletClient!.sendTransaction({
         to: uiConfig.lensHubProxyAddress,
         account: address,
         data: calldata as `0x${string}`,
       });
-      setCreateState("PENDING IN MEMPOOL");
+      setCreateState('PENDING IN MEMPOOL');
       setTxHash(hash);
       const result = await publicClient({
-        chainId: 80001,
+        chainId: currChainId,
       }).waitForTransactionReceipt({ hash });
-      if (result.status === "success") {
-        setCreateState("SUCCESS");
+      if (result.status === 'success') {
+        setCreateState('SUCCESS');
         refresh();
       } else {
-        setCreateState("CREATE TXN REVERTED");
+        setCreateState('CREATE TXN REVERTED');
       }
     } catch (e) {
       setCreateState(`ERROR: ${e instanceof Error ? e.message : String(e)}`);
@@ -137,7 +201,6 @@ const ActionBox = ({
       <div className="flex flex-col justify-center items-center">
         <p>ProfileID: {post.args.postParams.profileId}</p>
         <p>PublicationID: {post.args.pubId}</p>
-        <p>Initialize Message: {fetchInitMessage(post)}</p>
         <img
           className="my-3 rounded-2xl"
           src={serializeLink(post.args.postParams.contentURI)}
@@ -153,23 +216,18 @@ const ActionBox = ({
         </Button>
       </div>
       <div>
-        <p className="mb-3">
-          Action message (will be emitted in HelloWorld event)
-        </p>
-        <Input
-          id={`initializeTextId-${post.args.pubId}`}
-          type="text"
-          value={actionText}
-          onChange={(e) => setActionText(e.target.value)}
-          disabled={!profileId}
-        />
+        <p className="mb-2">Open action details</p>
+        <p>{`Address: ${contract}`}</p>
+        <p>{`Chain: ${dstChain}`}</p>
+        <p>{`Cost ${formatUnits(cost, 18)}`}</p>
       </div>
       {profileId && (
         <Button
           className="mt-3"
-          onClick={() => executeHelloWorld(post, actionText)}
+          onClick={() => executeDecentOA(post)}
+          disabled={resp.isLoading}
         >
-          Post Message
+          Mint
         </Button>
       )}
       {profileId &&
@@ -198,18 +256,11 @@ const ActionBox = ({
 
 export const Actions = () => {
   const [filterOwnPosts, setFilterOwnPosts] = useState(false);
-  const { address, profileId, posts, refresh, loading } = useLensHelloWorld();
-  //const profileIdString = profileId ? "0x" + profileId.toString(16) : "0x0";
-  const { data } = usePublications({
-    where: {
-      //from: [profileIdString as ProfileId],
-      withOpenActions: [{ address: uiConfig.helloWorldContractAddress }],
-    },
-  });
-  console.log(data);
-  const activePosts = mode === "api" ? [] : posts;
-
-  let filteredPosts = filterOwnPosts
+  const { address, profileId, posts, refresh, loading } = useDecentOA();
+  const activePosts = mode === 'api' ? [] : posts;
+  let filteredPosts = activePosts;
+  console.log('filtered posts', posts);
+  filterOwnPosts
     ? activePosts.filter(
         (post) => post.args.postParams.profileId === profileId?.toString()
       )
@@ -241,15 +292,17 @@ export const Actions = () => {
       {filteredPosts.length === 0 ? (
         <p>None</p>
       ) : (
-        filteredPosts.map((post, index) => (
-          <ActionBox
-            key={index}
-            post={post}
-            address={address}
-            profileId={profileId}
-            refresh={refresh}
-          />
-        ))
+        filteredPosts
+          .filter((post) => !!fetchParams(post))
+          .map((post, index) => (
+            <ActionBox
+              key={index}
+              post={post}
+              address={address}
+              profileId={profileId}
+              refresh={refresh}
+            />
+          ))
       )}
     </>
   );

@@ -1,39 +1,75 @@
-import { useState } from "react";
-import { useLensHelloWorld } from "../context/LensHelloWorldContext";
-import { encodeAbiParameters, encodeFunctionData, zeroAddress } from "viem";
-import { uiConfig } from "../utils/constants";
-import { lensHubAbi } from "../utils/lensHubAbi";
-import { useWalletClient } from "wagmi";
-import { publicClient } from "../main";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import {
+  encodeAbiParameters,
+  encodeFunctionData,
+  encodePacked,
+  parseUnits,
+  zeroAddress,
+} from 'viem';
+import { currChainId, uiConfig } from '../utils/constants';
+import { lensHubAbi } from '../utils/lensHubAbi';
+import { useWalletClient } from 'wagmi';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  ChainId,
+  getCommonSignatureFromString,
+  getCommonSignature,
+  CommonNftType,
+} from '@decent.xyz/box-common';
+import { useDecentOA } from '@/context/DecentOAContext';
+import { publicClient } from '@/main';
 
 export const Create = () => {
-  const { address, profileId, refresh } = useLensHelloWorld();
+  const { address, profileId, refresh } = useDecentOA();
   const { data: walletClient } = useWalletClient();
   const [createState, setCreateState] = useState<string | undefined>();
   const [freeCollect, setFreeCollect] = useState<boolean>(false);
   const [txHash, setTxHash] = useState<string | undefined>();
-  const [uri, setURI] = useState<string>("");
-  const [initializeText, setInitializeText] = useState<string>("");
+  const [uri, setURI] = useState<string>(
+    'https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/University_of_Rhode_Island_seal.svg/150px-University_of_Rhode_Island_seal.svg.png'
+  );
+  const [nftType, setNftType] = useState<string>('Decent');
+  const [dstChainId, setDstChainId] = useState<number>(ChainId.POLYGON);
+  const [nftAddress, setNftAddress] = useState<string>(
+    uiConfig.nfts.maticNftCost0_1
+  );
+  const [cost, setCost] = useState<string>('0.1');
 
   const createPost = async () => {
+    // this can be done in a handful of ways either by calling
+    // getCommonSignature: and selecting the CommonNftType enum from dropdown in the frontend or
+    // getCommonSignatureFromString: this is more flexible for ppl who want to pass
+    //                               in arbitrary function signatures / no dropdown
+    const nftSignature: string = getCommonSignatureFromString(nftType);
     const encodedInitData = encodeAbiParameters(
-      [{ type: "string" }],
-      [initializeText]
+      [
+        { type: 'address' },
+        { type: 'address' },
+        { type: 'uint256' },
+        { type: 'uint256' },
+        { type: 'bytes' },
+      ],
+      [
+        nftAddress as `0x${string}`,
+        zeroAddress,
+        BigInt(dstChainId),
+        parseUnits(cost, 18),
+        encodePacked(['string'], [nftSignature]),
+      ]
     );
 
     const actionModulesInitDatas = [encodedInitData];
-    const actionModules = [uiConfig.openActionContractAddress];
+    const actionModules = [uiConfig.decentOpenActionContractAddress];
     if (freeCollect) {
       const baseFeeCollectModuleTypes = [
-        { type: "uint160" },
-        { type: "uint96" },
-        { type: "address" },
-        { type: "uint16" },
-        { type: "bool" },
-        { type: "uint72" },
-        { type: "address" },
+        { type: 'uint160' },
+        { type: 'uint96' },
+        { type: 'address' },
+        { type: 'uint16' },
+        { type: 'bool' },
+        { type: 'uint72' },
+        { type: 'address' },
       ];
 
       const encodedBaseFeeCollectModuleInitData = encodeAbiParameters(
@@ -42,7 +78,7 @@ export const Create = () => {
       );
 
       const encodedCollectActionInitData = encodeAbiParameters(
-        [{ type: "address" }, { type: "bytes" }],
+        [{ type: 'address' }, { type: 'bytes' }],
         [
           uiConfig.simpleCollectModuleContractAddress,
           encodedBaseFeeCollectModuleInitData,
@@ -59,33 +95,33 @@ export const Create = () => {
       actionModules,
       actionModulesInitDatas,
       referenceModule:
-        "0x0000000000000000000000000000000000000000" as `0x${string}`,
-      referenceModuleInitData: "0x01" as `0x${string}`,
+        '0x0000000000000000000000000000000000000000' as `0x${string}`,
+      referenceModuleInitData: '0x01' as `0x${string}`,
     };
 
     const calldata = encodeFunctionData({
       abi: lensHubAbi,
-      functionName: "post",
+      functionName: 'post',
       args: [args],
     });
 
-    setCreateState("PENDING IN WALLET");
+    setCreateState('PENDING IN WALLET');
     try {
       const hash = await walletClient!.sendTransaction({
         to: uiConfig.lensHubProxyAddress,
         account: address,
         data: calldata,
       });
-      setCreateState("PENDING IN MEMPOOL");
+      setCreateState('PENDING IN MEMPOOL');
       setTxHash(hash);
       const result = await publicClient({
-        chainId: 80001,
+        chainId: currChainId,
       }).waitForTransactionReceipt({ hash });
-      if (result.status === "success") {
-        setCreateState("SUCCESS");
+      if (result.status === 'success') {
+        setCreateState('SUCCESS');
         refresh();
       } else {
-        setCreateState("CREATE TXN REVERTED");
+        setCreateState('CREATE TXN REVERTED');
       }
     } catch (e) {
       setCreateState(`ERROR: ${e instanceof Error ? e.message : String(e)}`);
@@ -105,14 +141,44 @@ export const Create = () => {
                 placeholder="URI"
                 onChange={(e) => setURI(e.target.value)}
               />
-              <p className="my-2">
-                Initialize message (will be emitted in HelloWorld event)
-              </p>
+              <p className="my-2">Initialize contract address</p>
               <Input
-                placeholder="Message"
-                type="text"
-                value={initializeText}
-                onChange={(e) => setInitializeText(e.target.value)}
+                placeholder="Types: Zora, Sound, or Manifold"
+                type="string"
+                value={nftAddress}
+                onChange={(e) => setNftAddress(e.target.value)}
+              />
+              <p className="my-2">Chain</p>
+              <select
+                name="chain"
+                id="chainSelect"
+                onChange={(e) => {
+                  setDstChainId(parseInt(e.target.value));
+                  console.log(parseInt(e.target.value));
+                }}
+                className="border p-2"
+              >
+                <option value={ChainId.POLYGON}>Polygon</option>
+                <option value={ChainId.ARBITRUM}>Arbitrum</option>
+                <option value={ChainId.ETHEREUM}>Ethereum</option>
+                <option value={ChainId.OPTIMISM}>Optimism</option>
+                <option value={ChainId.BASE}>Base</option>
+                <option value={ChainId.POLYGON_TESTNET}>Mumbai</option>
+                <option value={ChainId.GOERLI}>Goerli</option>
+              </select>
+              <p className="my-2">Cost</p>
+              <Input
+                placeholder="Types: Zora, Sound, or Manifold"
+                type="string"
+                value={cost}
+                onChange={(e) => setCost(e.target.value)}
+              />
+              <p className="my-2">Contract Type</p>
+              <Input
+                placeholder="Types: Zora, Sound, or Manifold"
+                type="string"
+                value={nftType}
+                onChange={(e) => setNftType(e.target.value)}
               />
               <div className="my-3 mx-auto">
                 <input
@@ -139,12 +205,11 @@ export const Create = () => {
               </a>
             )}
             <Button
-              variant={"outline"}
+              variant={'outline'}
               className="my-3"
               onClick={() => {
                 setTxHash(undefined);
-                setInitializeText("");
-                setURI("");
+                setURI('');
                 setCreateState(undefined);
               }}
             >
