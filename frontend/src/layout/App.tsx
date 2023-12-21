@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button';
 import { network } from '@/utils/constants.tsx';
 import { DecentOAProvider } from '@/context/useDecentOA.tsx';
 import { useDecentOA } from '@/context/DecentOAContext.ts';
+import { BoxHooksContextProvider } from '@decent.xyz/box-hooks';
+
+const decentApiKey = import.meta.env.VITE_DECENT_API_KEY;
 
 const lensConfig: LensConfig = {
   bindings: wagmiBindings(),
@@ -16,12 +19,14 @@ const lensConfig: LensConfig = {
 export const App = () => {
   return (
     <WalletConnectProvider>
-      <LensProvider config={lensConfig}>
-        <DecentOAProvider>
-          <Nav />
-          <Home />
-        </DecentOAProvider>
-      </LensProvider>
+      <BoxHooksContextProvider apiKey={decentApiKey}>
+        <LensProvider config={lensConfig}>
+          <DecentOAProvider>
+            <Nav />
+            <Home />
+          </DecentOAProvider>
+        </LensProvider>
+      </BoxHooksContextProvider>
     </WalletConnectProvider>
   );
 };
