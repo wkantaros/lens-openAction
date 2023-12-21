@@ -290,17 +290,15 @@
     stream-browserify "^3.0.0"
     util "^0.12.4"
 
-"@decent.xyz/box-common@../decent.xyz-box-common-1.0.8.tgz":
-  version "1.0.8"
-  resolved "file:../decent.xyz-box-common-1.0.8.tgz"
-  integrity sha512-JKDCF7h/kQeYZRKo4IkFK3zdRbUE2oZfVZPqt6MYN7r82hmbIr7/80fykE1AEeAXR7H7/6yOdPMmY6LVZ4g6HA==
+"@decent.xyz/box-common@../decent.xyz-box-common-1.0.15.tgz":
+  version "1.0.15"
+  resolved "../decent.xyz-box-common-1.0.15.tgz#3cd8dd41baf568060137a89d874c20e40c968b2e"
 
-"@decent.xyz/box-hooks@./decent.xyz-box-hooks-1.0.44.tgz":
-  version "1.0.44"
-  resolved "file:decent.xyz-box-hooks-1.0.44.tgz"
-  integrity sha512-HX3UscOoXEdjepGadWdWMEYNnCan9VReJqg34AqL/h7Wd0P/arMmDLgzmXhWd+j9eDZcwId5fJO4ce/zLTK3KA==
+"@decent.xyz/box-hooks@./decent.xyz-box-hooks-1.0.47.tgz":
+  version "1.0.47"
+  resolved "./decent.xyz-box-hooks-1.0.47.tgz#64b42faf50e8c6aec9fcc24586af9dfa29705eee"
   dependencies:
-    "@decent.xyz/box-common" "../decent.xyz-box-common-1.0.8.tgz"
+    "@decent.xyz/box-common" "../decent.xyz-box-common-1.0.15.tgz"
 
 "@emotion/is-prop-valid@^0.8.2":
   version "0.8.8"
