@@ -1,19 +1,20 @@
-import "../styles/Action.css";
-import { useLogin, useProfiles } from "@lens-protocol/react-web";
-import { Actions } from "./Act";
-import { Events } from "./Events";
-import { useLensHelloWorld } from "../context/LensHelloWorldContext";
-import { Create } from "./Create";
-import { useEffect, useState } from "react";
-import { LoginData } from "../utils/types";
-import { Button } from "@/components/ui/button";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { PenLine, Rows, Activity, LogIn, Unplug } from "lucide-react";
-import { network } from "@/utils/constants";
+import '../styles/Action.css';
+import { useLogin, useProfiles } from '@lens-protocol/react-web';
+import { Actions } from './Act';
+import { Events } from './Events';
+// import { useLensHelloWorld } from '../context/LensHelloWorldContext';
+import { Create } from './Create';
+import { useEffect, useState } from 'react';
+import { LoginData } from '../utils/types';
+import { Button } from '@/components/ui/button';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { PenLine, Rows, Activity, LogIn, Unplug } from 'lucide-react';
+import { network } from '@/utils/constants';
+import { useDecentOA } from '@/context/DecentOAContext';
 
 export const Home = () => {
-  const [activeSection, setActiveSection] = useState<string>("create");
-  const { address, handle, connect, disconnect } = useLensHelloWorld();
+  const [activeSection, setActiveSection] = useState<string>('create');
+  const { address, handle, connect, disconnect } = useDecentOA();
   const { open } = useWeb3Modal();
   const { execute: executeLogin, data: loginData } = useLogin();
   const [connected, setConnected] = useState(false);
@@ -34,7 +35,7 @@ export const Home = () => {
       if (!loginData) return;
       connect({ ...loginData } as LoginData);
     } catch (err) {
-      console.log("err: ", err);
+      console.log('err: ', err);
     }
   }
 
@@ -63,7 +64,7 @@ function Profiles({
 }) {
   const { data: profiles } = useProfiles({
     where: {
-      ownedBy: [address || "0x0000000000000000000000000000000000000000"],
+      ownedBy: [address || '0x0000000000000000000000000000000000000000'],
     },
   });
 
@@ -79,29 +80,29 @@ function Profiles({
       </div>
       <div className="mt-6 mb-6">
         <Button
-          variant={activeSection === "create" ? "default" : "secondary"}
-          onClick={() => setActiveSection("create")}
+          variant={activeSection === 'create' ? 'default' : 'secondary'}
+          onClick={() => setActiveSection('create')}
           className="px-10 mx-2"
         >
           <PenLine className="mr-2 h-4 w-4" />
           Create Smart Post
         </Button>
         <Button
-          variant={activeSection === "actions" ? "default" : "secondary"}
-          onClick={() => setActiveSection("actions")}
+          variant={activeSection === 'actions' ? 'default' : 'secondary'}
+          onClick={() => setActiveSection('actions')}
           className="px-10 mx-2"
         >
           <Rows className="mr-2 h-4 w-4" />
           View Smart Posts
         </Button>
-        <Button
-          variant={activeSection === "events" ? "default" : "secondary"}
-          onClick={() => setActiveSection("events")}
+        {/* <Button
+          variant={activeSection === 'events' ? 'default' : 'secondary'}
+          onClick={() => setActiveSection('events')}
           className="px-10 mx-2"
         >
           <Activity className="mr-2 h-4 w-4" />
           Events
-        </Button>
+        </Button> */}
       </div>
       <Button
         variant="outline"
@@ -112,12 +113,12 @@ function Profiles({
         }}
       >
         <Unplug className="mr-2 h-4 w-4" />
-        {address ? "Disconnect" : "Connect Wallet"}
+        {address ? 'Disconnect' : 'Connect Wallet'}
       </Button>
       {showNoLensProfiles && <p>No Lens Profiles found for this address</p>}
-      {showNoLensProfiles && network === "mumbai" && (
+      {showNoLensProfiles && network === 'mumbai' && (
         <p>
-          Create test profile @{" "}
+          Create test profile @{' '}
           <a href="https://testnet.hey.xyz/" target="_blank">
             https://testnet.hey.xyz/
           </a>
@@ -133,9 +134,9 @@ function Profiles({
           Sign in with {profiles[0].handle?.localName}.lens
         </Button>
       )}
-      {activeSection === "create" && <Create />}
-      {activeSection === "actions" && <Actions />}
-      {activeSection === "events" && <Events />}
+      {activeSection === 'create' && <Create />}
+      {activeSection === 'actions' && <Actions />}
+      {activeSection === 'events' && <Events />}
     </div>
   );
 }
