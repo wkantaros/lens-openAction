@@ -1,33 +1,33 @@
-import { Home } from "./Home.tsx";
-import { LensConfig, development, production } from "@lens-protocol/react-web";
-import { bindings as wagmiBindings } from "@lens-protocol/wagmi";
-import { LensProvider } from "@lens-protocol/react-web";
-import { LensHelloWorldProvider } from "../context/useLensHelloWorld.tsx";
-import { WalletConnectProvider } from "./WalletConnectProvider.tsx";
-import { useLensHelloWorld } from "../context/LensHelloWorldContext.ts";
-import { Button } from "@/components/ui/button";
-import { network } from "@/utils/constants.tsx";
+import { Home } from './Home.tsx';
+import { LensConfig, development, production } from '@lens-protocol/react-web';
+import { bindings as wagmiBindings } from '@lens-protocol/wagmi';
+import { LensProvider } from '@lens-protocol/react-web';
+import { WalletConnectProvider } from './WalletConnectProvider.tsx';
+import { Button } from '@/components/ui/button';
+import { network } from '@/utils/constants.tsx';
+import { DecentOAProvider } from '@/context/useDecentOA.tsx';
+import { useDecentOA } from '@/context/DecentOAContext.ts';
 
 const lensConfig: LensConfig = {
   bindings: wagmiBindings(),
-  environment: network === "polygon" ? production : development,
+  environment: network === 'polygon' ? production : development,
 };
 
 export const App = () => {
   return (
     <WalletConnectProvider>
       <LensProvider config={lensConfig}>
-        <LensHelloWorldProvider>
+        <DecentOAProvider>
           <Nav />
           <Home />
-        </LensHelloWorldProvider>
+        </DecentOAProvider>
       </LensProvider>
     </WalletConnectProvider>
   );
 };
 
 function Nav() {
-  const { handle, clear, disconnect } = useLensHelloWorld();
+  const { handle, clear, disconnect } = useDecentOA();
 
   return (
     <nav className="flex flex-1 border-b">
