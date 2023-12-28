@@ -110,6 +110,7 @@ export const Create = () => {
       referenceModuleInitData: '0x01' as `0x${string}`,
     };
 
+    // swap lensHubAbi for proxy address
     const calldata = encodeFunctionData({
       abi: lensHubAbi,
       functionName: 'post',

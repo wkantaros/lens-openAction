@@ -1,8 +1,8 @@
 import { Address } from 'viem';
 import { ChainId } from '@decent.xyz/box-common';
 
-export const network: string = 'polygon'; // options: 'polygon', 'mumbai'
-// export const network: string = 'mumbai';
+// export const network: string = 'polygon'; // options: 'polygon', 'mumbai'
+export const network: string = 'mumbai';
 export const currChainId =
   network == 'mumbai' ? ChainId.POLYGON_TESTNET : ChainId.POLYGON;
 
@@ -47,8 +47,9 @@ export const uiConfig: UiConfig =
           import.meta.env.VITE_ALCHEMY_POLYGON_API_KEY
         }`,
         decentOpenActionContractAddress:
-          '0x273799987aAE409353e0e13192925c64748dB0Af',
-        decentStartBlock: 51343374,
+          '0xA9d72bCAd216b1F05d7D60b46Fd8dC01D501257a',
+        // '0x273799987aAE409353e0e13192925c64748dB0Af',
+        decentStartBlock: 51672009,
         wMatic: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
         // test nfts
         nfts: {
@@ -58,9 +59,9 @@ export const uiConfig: UiConfig =
       }
     : {
         helloWorldContractAddress: '0x4ae4400c4f965F818f3E0b66e9b0ef5721146Bc0',
-        helloWorldContractStartBlock: 43746955,
+        helloWorldContractStartBlock: 44120661,
         openActionContractAddress: '0x038D178a5aF79fc5BdbB436daA6B9144c669A93F',
-        openActionContractStartBlock: 43746955,
+        openActionContractStartBlock: 44120661,
         lensHubProxyAddress: '0x4fbffF20302F3326B20052ab9C217C44F6480900',
         collectActionContractAddress:
           '0x4FdAae7fC16Ef41eAE8d8f6578d575C9d64722f2',
@@ -71,8 +72,9 @@ export const uiConfig: UiConfig =
           import.meta.env.VITE_ALCHEMY_MUMBAI_API_KEY
         }`,
         decentOpenActionContractAddress:
-          '0x25f311bE55a47D395D89664B910f885c50E2c854',
-        decentStartBlock: 43746955,
+          // '0x25f311bE55a47D395D89664B910f885c50E2c854',
+          '0x5bF5269c2F5983a3a72F2bFc69D5f07530138CBd',
+        decentStartBlock: 44120661,
         wMatic: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
         // test nfts
         nfts: {

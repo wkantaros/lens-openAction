@@ -1,372 +1,243 @@
 export const decentAbi = [
   {
+    type: 'constructor',
     inputs: [
+      { name: '_coreWrapper', type: 'address', internalType: 'address' },
       {
-        internalType: 'address',
-        name: '_coreWrapper',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
         name: '_lensHubProxyContract',
         type: 'address',
+        internalType: 'address',
       },
-      {
-        internalType: 'string',
-        name: '_metadataURI',
-        type: 'string',
-      },
+      { name: '_metadataURI', type: 'string', internalType: 'string' },
     ],
     stateMutability: 'nonpayable',
-    type: 'constructor',
   },
   {
-    inputs: [],
-    name: 'WrongBoxArgs',
-    type: 'error',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'profileId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'pubId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'transactionExecutor',
-        type: 'address',
-      },
-    ],
-    name: 'InitializedPublicationAction',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousOwner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
-    ],
-    name: 'OwnershipTransferred',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'publicationActedProfileId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'publicationActedId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'actorProfileId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'actorProfileOwner',
-        type: 'address',
-      },
-    ],
-    name: 'ProcessedPublicationAction',
-    type: 'event',
-  },
-  {
-    inputs: [],
+    type: 'function',
     name: 'HUB',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
+    inputs: [],
+    outputs: [{ name: '', type: 'address', internalType: 'address' }],
     stateMutability: 'view',
-    type: 'function',
   },
   {
-    inputs: [],
+    type: 'function',
     name: 'coreWrapper',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
+    inputs: [],
+    outputs: [{ name: '', type: 'address', internalType: 'address' }],
     stateMutability: 'view',
-    type: 'function',
   },
   {
-    inputs: [],
+    type: 'function',
     name: 'getModuleMetadataURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
+    inputs: [],
+    outputs: [{ name: '', type: 'string', internalType: 'string' }],
     stateMutability: 'view',
-    type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'profileId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'pubId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'address',
-        name: 'transactionExecutor',
-        type: 'address',
-      },
-      {
-        internalType: 'bytes',
-        name: 'data',
-        type: 'bytes',
-      },
-    ],
+    type: 'function',
     name: 'initializePublicationAction',
-    outputs: [
-      {
-        internalType: 'bytes',
-        name: '',
-        type: 'bytes',
-      },
+    inputs: [
+      { name: 'profileId', type: 'uint256', internalType: 'uint256' },
+      { name: 'pubId', type: 'uint256', internalType: 'uint256' },
+      { name: 'transactionExecutor', type: 'address', internalType: 'address' },
+      { name: 'data', type: 'bytes', internalType: 'bytes' },
     ],
+    outputs: [{ name: '', type: 'bytes', internalType: 'bytes' }],
     stateMutability: 'nonpayable',
-    type: 'function',
   },
   {
-    inputs: [],
+    type: 'function',
     name: 'metadataURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [],
-    name: 'owner',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
+    outputs: [{ name: '', type: 'string', internalType: 'string' }],
     stateMutability: 'view',
-    type: 'function',
   },
   {
+    type: 'function',
+    name: 'owner',
+    inputs: [],
+    outputs: [{ name: '', type: 'address', internalType: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'processPublicationAction',
     inputs: [
       {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'publicationActedProfileId',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'publicationActedId',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'actorProfileId',
-            type: 'uint256',
-          },
-          {
-            internalType: 'address',
-            name: 'actorProfileOwner',
-            type: 'address',
-          },
-          {
-            internalType: 'address',
-            name: 'transactionExecutor',
-            type: 'address',
-          },
-          {
-            internalType: 'uint256[]',
-            name: 'referrerProfileIds',
-            type: 'uint256[]',
-          },
-          {
-            internalType: 'uint256[]',
-            name: 'referrerPubIds',
-            type: 'uint256[]',
-          },
-          {
-            internalType: 'enum Types.PublicationType[]',
-            name: 'referrerPubTypes',
-            type: 'uint8[]',
-          },
-          {
-            internalType: 'bytes',
-            name: 'actionModuleData',
-            type: 'bytes',
-          },
-        ],
-        internalType: 'struct Types.ProcessActionParams',
         name: 'params',
         type: 'tuple',
+        internalType: 'struct Types.ProcessActionParams',
+        components: [
+          {
+            name: 'publicationActedProfileId',
+            type: 'uint256',
+            internalType: 'uint256',
+          },
+          {
+            name: 'publicationActedId',
+            type: 'uint256',
+            internalType: 'uint256',
+          },
+          { name: 'actorProfileId', type: 'uint256', internalType: 'uint256' },
+          {
+            name: 'actorProfileOwner',
+            type: 'address',
+            internalType: 'address',
+          },
+          {
+            name: 'transactionExecutor',
+            type: 'address',
+            internalType: 'address',
+          },
+          {
+            name: 'referrerProfileIds',
+            type: 'uint256[]',
+            internalType: 'uint256[]',
+          },
+          {
+            name: 'referrerPubIds',
+            type: 'uint256[]',
+            internalType: 'uint256[]',
+          },
+          {
+            name: 'referrerPubTypes',
+            type: 'uint8[]',
+            internalType: 'enum Types.PublicationType[]',
+          },
+          { name: 'actionModuleData', type: 'bytes', internalType: 'bytes' },
+        ],
       },
     ],
-    name: 'processPublicationAction',
-    outputs: [
-      {
-        internalType: 'bytes',
-        name: '',
-        type: 'bytes',
-      },
-    ],
+    outputs: [{ name: '', type: 'bytes', internalType: 'bytes' }],
     stateMutability: 'nonpayable',
-    type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
+    type: 'function',
     name: 'pubActions',
+    inputs: [
+      { name: '', type: 'uint256', internalType: 'uint256' },
+      { name: '', type: 'uint256', internalType: 'uint256' },
+    ],
     outputs: [
-      {
-        internalType: 'address',
-        name: 'targetContract',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'paymentToken',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'chainId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'cost',
-        type: 'uint256',
-      },
-      {
-        internalType: 'bytes',
-        name: 'signature',
-        type: 'bytes',
-      },
+      { name: 'targetContract', type: 'address', internalType: 'address' },
+      { name: 'paymentToken', type: 'address', internalType: 'address' },
+      { name: 'chainId', type: 'uint256', internalType: 'uint256' },
+      { name: 'cost', type: 'uint256', internalType: 'uint256' },
+      { name: 'signature', type: 'bytes', internalType: 'bytes' },
     ],
     stateMutability: 'view',
-    type: 'function',
   },
   {
-    inputs: [],
+    type: 'function',
     name: 'renounceOwnership',
+    inputs: [],
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'string',
-        name: '_metadataURI',
-        type: 'string',
-      },
-    ],
+    type: 'function',
     name: 'setModuleMetadataURI',
+    inputs: [{ name: '_metadataURI', type: 'string', internalType: 'string' }],
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'bytes4',
-        name: 'interfaceID',
-        type: 'bytes4',
-      },
-    ],
+    type: 'function',
     name: 'supportsInterface',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
+    inputs: [{ name: 'interfaceID', type: 'bytes4', internalType: 'bytes4' }],
+    outputs: [{ name: '', type: 'bool', internalType: 'bool' }],
     stateMutability: 'pure',
-    type: 'function',
   },
   {
+    type: 'function',
+    name: 'transferOwnership',
+    inputs: [{ name: 'newOwner', type: 'address', internalType: 'address' }],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'updateCoreWrapper',
+    inputs: [
+      { name: '_coreWrapper', type: 'address', internalType: 'address' },
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'event',
+    name: 'InitializedPublicationAction',
     inputs: [
       {
+        name: 'profileId',
+        type: 'uint256',
+        indexed: false,
+        internalType: 'uint256',
+      },
+      {
+        name: 'pubId',
+        type: 'uint256',
+        indexed: false,
+        internalType: 'uint256',
+      },
+      {
+        name: 'transactionExecutor',
+        type: 'address',
+        indexed: false,
         internalType: 'address',
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: 'event',
+    name: 'OwnershipTransferred',
+    inputs: [
+      {
+        name: 'previousOwner',
+        type: 'address',
+        indexed: true,
+        internalType: 'address',
+      },
+      {
         name: 'newOwner',
         type: 'address',
+        indexed: true,
+        internalType: 'address',
       },
     ],
-    name: 'transferOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    anonymous: false,
   },
   {
+    type: 'event',
+    name: 'ProcessedPublicationAction',
     inputs: [
       {
-        internalType: 'address',
-        name: '_coreWrapper',
+        name: 'publicationActedProfileId',
+        type: 'uint256',
+        indexed: false,
+        internalType: 'uint256',
+      },
+      {
+        name: 'publicationActedId',
+        type: 'uint256',
+        indexed: false,
+        internalType: 'uint256',
+      },
+      {
+        name: 'actorProfileId',
+        type: 'uint256',
+        indexed: false,
+        internalType: 'uint256',
+      },
+      {
+        name: 'actorProfileOwner',
         type: 'address',
+        indexed: false,
+        internalType: 'address',
       },
     ],
-    name: 'updateCoreWrapper',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    anonymous: false,
   },
+  { type: 'error', name: 'WrongBoxArgs', inputs: [] },
 ] as const;

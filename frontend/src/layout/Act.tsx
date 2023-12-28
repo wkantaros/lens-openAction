@@ -45,6 +45,7 @@ const ActionBox = ({
     actionConfig: {
       functionCall: 'processPublicationAction',
       pubId: post.args.pubId,
+      profileId: post.args.postParams.profileId,
       contractAddress: contract,
       chainId: dstChainId,
       cost: {
@@ -72,9 +73,9 @@ const ActionBox = ({
     const encodedActionData = resp.actionResponse!.arbitraryData.lensActionData;
 
     const args = {
-      publicationActedProfileId: BigInt(post.args.postParams.profileId || 0),
+      publicationActedProfileId: BigInt(post.args.postParams.profileId),
       publicationActedId: BigInt(post.args.pubId),
-      actorProfileId: BigInt(profileId || 0),
+      actorProfileId: BigInt(profileId!),
       referrerProfileIds: [],
       referrerPubIds: [],
       actionModuleAddress: uiConfig.decentOpenActionContractAddress,
