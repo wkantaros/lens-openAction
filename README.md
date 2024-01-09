@@ -1,8 +1,6 @@
 # Lens Hello World Smart Post
 
-This repo contains smart contracts and a UI which demonstrates a Lens Smart Post to call an arbitrary function on an external contract, leveraging Decent's Open Action
-
-The Polygon mainnet version of the site is live [here](https://lens-hello-world-open-action.vercel.app/)
+This repo contains an e2e example of how to integrate a Lens Smart Post to call an arbitrary function on an external contract, leveraging Decent's Open Action
 
 - [Integration Guide](#integration-guide)
 
@@ -64,15 +62,20 @@ For a complete example of creating a post with this open action module with viem
 A publication with this open action will contain the module address and initialize data from the "Create Post" step contained in it's `postParams` field. To decode the initialize string:
 
 ```
-const index = actionModules.indexOf(openActionContractAddress);
-const actionModuleInitData = post.args.postParams.actionModulesInitDatas[index];
+const actionModules = post.args.postParams.actionModules;
+const index = actionModules.indexOf(uiConfig.decentOpenActionContractAddress);
 
 // viem
 const decodedInitializeDataViem = decodeAbiParameters(
-  [
-    { type: 'string' },
-  ],
-  actionModuleInitData,
+    [
+      { type: 'address' },
+      { type: 'address' },
+      { type: 'uint256' },
+      { type: 'uint256' },
+      { type: 'string' },
+    ],
+    actionModuleInitData
+  );
 )
 
 ```
