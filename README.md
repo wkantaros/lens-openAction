@@ -80,7 +80,7 @@ const decodedInitializeDataViem = decodeAbiParameters(
 
 ```
 
-To allow users to execute this action, an integration should display the decoded initialize string, an input box for the user to set an action string, and button which trigger the action.
+To allow users to execute this action, an integration should display whatever relevant data is needed from the initialize step. In the repo example, this is the cost of the transaction, the address of the nft to mint, the chain the contract is on, and button to trigger the action.
 
 When the button is pressed, `act` should be called on the `LensHub` contract, with relavent fields:
 
@@ -92,9 +92,7 @@ When the button is pressed, `act` should be called on the `LensHub` contract, wi
 
 - actionModuleData - bytes data, for this action there is one parameter encoded, a string containing an action message (which is also contained in the Hello World event output)
 
-The actionModuleData can be encoded identically to the initializeData.
-
-For a complete example of executing this open action on a publication with viem, see [here](https://github.com/wkantaros/lens-openAction/blob/main/frontend/src/layout/Act.tsx)
+For a complete example (which shows how to fetch the correct actionModuleData) of executing this open action on a publication with viem, see [here](https://github.com/wkantaros/lens-openAction/blob/main/frontend/src/layout/Act.tsx)
 
 
 ## Frontend
