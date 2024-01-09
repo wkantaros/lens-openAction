@@ -1,6 +1,6 @@
 # Lens Hello World Smart Post
 
-This repo contains smart contracts and a UI which demonstrates a Lens Smart Post to call a helloWorld() function on an external contract.
+This repo contains smart contracts and a UI which demonstrates a Lens Smart Post to call an arbitrary function on an external contract, leveraging Decent's Open Action
 
 The Polygon mainnet version of the site is live [here](https://lens-hello-world-open-action.vercel.app/)
 
@@ -14,9 +14,9 @@ The Polygon mainnet version of the site is live [here](https://lens-hello-world-
 
 The deployed action module addresses are:
 
-- [Polygon Mainnet](https://polygonscan.com/address/0x7c4fAeef5ba47a437DFBaB57C016c1E706F56fcf)
+- [Polygon Mainnet](https://polygonscan.com/address/0xA9d72bCAd216b1F05d7D60b46Fd8dC01D501257a)
 
-- [Mumbai Testnet](https://mumbai.polygonscan.com/address/0x038D178a5aF79fc5BdbB436daA6B9144c669A93F)
+- [Mumbai Testnet](https://mumbai.polygonscan.com/address/0x5bF5269c2F5983a3a72F2bFc69D5f07530138CBd)
 
 To integrate this open action, support must be added to create and execute the action.
 
@@ -32,15 +32,29 @@ An integration for this action should display an input box for the initialize st
 
 ```
 // viem
-const encodedInitDataVIem = encodeAbiParameters(
-    [{ type: "string" }],
-    [initializeString]
-);
-
-// ethers v5
-const encodedInitDataEthers = ethers.utils.defaultAbiCoder.encode(
-    ["string"],
-    [initializeString]
+const encodedInitData = encodeAbiParameters(
+    [
+        // contract address of call (i.e. your nft address)
+        { type: 'address' },
+        // the payment token for the action (i.e.mint) zeroAddress if cost is native or free
+        { type: 'address' },
+        // chainId of that contract (137 if your nft is on polygon, 10 if op, etc)
+        // can use ChainId enum from @decent.xyz/box-common for convenience
+        { type: 'uint256' },
+        // cost of the function call (0 if free)
+        { type: 'uint256' },
+        // the function signature
+        // i.e. 'function mint(address to, uint256 numberOfTokens)'
+        // note: can use getCommonSignatureFromString to simplify process
+        { type: 'bytes' },
+    ],
+    [
+        nftAddress as `0x${string}`,
+        zeroAddress,
+        BigInt(dstChainId),
+        parseUnits(cost, 18),
+        encodePacked(['string'], [nftSignature]),
+    ]
 );
 ```
 
