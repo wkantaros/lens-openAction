@@ -82,6 +82,9 @@ const ActionBox = ({
       actionModuleData: encodedActionData as `0x${string}`,
     };
 
+    // swap lensHubAbi for publicActProxy address if desired and switch function to 'publicFreeAct'
+    // https://polygonscan.com/address/0x53582b1b7BE71622E7386D736b6baf87749B7a2B#writeContract
+    // for more information, checkout https://docs.lens.xyz/docs/deployed-contract-addresses
     const calldata = encodeFunctionData({
       abi: lensHubAbi,
       functionName: 'act',
