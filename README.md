@@ -42,7 +42,7 @@ const encodedInitData = encodeAbiParameters(
         { type: 'uint256' },
         // the function signature
         // i.e. 'function mint(address to, uint256 numberOfTokens)'
-        // note: can use getCommonSignatureFromString to simplify process
+        // note: can use getCommonSignatureFromString to simplify process for certain common NFT types
         { type: 'bytes' },
     ],
     [
