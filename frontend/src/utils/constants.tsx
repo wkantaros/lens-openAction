@@ -1,8 +1,8 @@
 import { Address } from 'viem';
 import { ChainId } from '@decent.xyz/box-common';
 
-// export const network: string = 'polygon'; // options: 'polygon', 'mumbai'
-export const network: string = 'mumbai';
+export const network: string = 'polygon'; // options: 'polygon', 'mumbai'
+// export const network: string = 'mumbai';
 export const currChainId =
   network == 'mumbai' ? ChainId.POLYGON_TESTNET : ChainId.POLYGON;
 
@@ -15,8 +15,6 @@ export const ipfsGateway = 'https://ipfs.io/ipfs/';
 export const arweaveGateway = 'https://arweave.net/';
 
 interface UiConfig {
-  helloWorldContractAddress: Address;
-  helloWorldContractStartBlock: number;
   openActionContractAddress: Address;
   openActionContractStartBlock: number;
   lensHubProxyAddress: Address;
@@ -33,10 +31,8 @@ interface UiConfig {
 export const uiConfig: UiConfig =
   network === 'polygon'
     ? {
-        helloWorldContractAddress: '0xCAE0AD610762F917E249E26a64ac06bcDE926d9c',
-        helloWorldContractStartBlock: 50547287,
         openActionContractAddress: '0x7c4fAeef5ba47a437DFBaB57C016c1E706F56fcf',
-        openActionContractStartBlock: 50547287,
+        openActionContractStartBlock: 52127053,
         lensHubProxyAddress: '0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d',
         collectActionContractAddress:
           '0x0D90C58cBe787CD70B5Effe94Ce58185D72143fB',
@@ -48,7 +44,7 @@ export const uiConfig: UiConfig =
         }`,
         decentOpenActionContractAddress:
           '0x99Cd5A6e51C85CCc63BeC61A177003A551953628',
-        decentStartBlock: 51672009,
+        decentStartBlock: 52127054,
         wMatic: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
         // test nfts
         nfts: {
@@ -57,10 +53,8 @@ export const uiConfig: UiConfig =
         },
       }
     : {
-        helloWorldContractAddress: '0x4ae4400c4f965F818f3E0b66e9b0ef5721146Bc0',
-        helloWorldContractStartBlock: 44120661,
         openActionContractAddress: '0x038D178a5aF79fc5BdbB436daA6B9144c669A93F',
-        openActionContractStartBlock: 44120661,
+        openActionContractStartBlock: 44583310,
         lensHubProxyAddress: '0x4fbffF20302F3326B20052ab9C217C44F6480900',
         collectActionContractAddress:
           '0x4FdAae7fC16Ef41eAE8d8f6578d575C9d64722f2',
@@ -72,7 +66,7 @@ export const uiConfig: UiConfig =
         }`,
         decentOpenActionContractAddress:
           '0x48Cc077E082365F1be696cAad2ccF91cEb08D9f9',
-        decentStartBlock: 44120661,
+        decentStartBlock: 44583310,
         wMatic: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
         // test nfts
         nfts: {
