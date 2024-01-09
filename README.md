@@ -6,14 +6,13 @@ This repo contains an e2e example of how to integrate a Lens Smart Post to call 
 
 - [Frontend](#frontend)
 
-
 ## Integration Guide
 
 The deployed action module addresses are:
 
-- [Polygon Mainnet](https://polygonscan.com/address/0xA9d72bCAd216b1F05d7D60b46Fd8dC01D501257a)
+- [Polygon Mainnet](https://polygonscan.com/address/0x99Cd5A6e51C85CCc63BeC61A177003A551953628)
 
-- [Mumbai Testnet](https://mumbai.polygonscan.com/address/0x5bF5269c2F5983a3a72F2bFc69D5f07530138CBd)
+- [Mumbai Testnet](https://mumbai.polygonscan.com/address/0x48Cc077E082365F1be696cAad2ccF91cEb08D9f9)
 
 To integrate this open action, support must be added to create and execute the action.
 
@@ -93,7 +92,6 @@ When the button is pressed, `act` should be called on the `LensHub` contract, wi
 - actionModuleData - bytes data, for this action there is one parameter encoded, a string containing an action message (which is also contained in the Hello World event output)
 
 For a complete example (which shows how to fetch the correct actionModuleData) of executing this open action on a publication with viem, see [here](https://github.com/wkantaros/lens-openAction/blob/main/frontend/src/layout/Act.tsx)
-
 
 ## Frontend
 
