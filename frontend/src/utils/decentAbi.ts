@@ -239,5 +239,6 @@ export const decentAbi = [
     ],
     anonymous: false,
   },
+  { type: 'error', name: 'NotHub', inputs: [] },
   { type: 'error', name: 'WrongBoxArgs', inputs: [] },
 ] as const;
