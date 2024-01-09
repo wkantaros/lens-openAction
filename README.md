@@ -8,7 +8,6 @@ The Polygon mainnet version of the site is live [here](https://lens-hello-world-
 
 - [Frontend](#frontend)
 
-- [Smart Contracts](#smart-contracts)
 
 ## Integration Guide
 
