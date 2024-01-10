@@ -76,7 +76,7 @@ function Profiles({
   return (
     <div className="flex flex-1 justify-center items-center flex-col">
       <div className="mt-20">
-        <h1 className="text-5xl font-geist-black">Hello World Smart Post</h1>
+        <h1 className="text-5xl font-geist-black">Decent Smart Post</h1>
       </div>
       <div className="mt-6 mb-6">
         <Button
