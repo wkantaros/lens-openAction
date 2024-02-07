@@ -9,6 +9,7 @@ export const fetchParams = (post: PostCreatedEventFormatted) => {
   const actionModuleInitData = post.args.postParams.actionModulesInitDatas[
     index
   ] as Address;
+  console.log('action module init data', actionModuleInitData);
 
   const decodedInitData = decodeAbiParameters(
     [

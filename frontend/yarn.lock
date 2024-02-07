@@ -290,15 +290,17 @@
     stream-browserify "^3.0.0"
     util "^0.12.4"
 
-"@decent.xyz/box-common@../decent.xyz-box-common-1.0.15.tgz":
-  version "1.0.15"
-  resolved "../decent.xyz-box-common-1.0.15.tgz#3cd8dd41baf568060137a89d874c20e40c968b2e"
+"@decent.xyz/box-common@^1.0.0", "@decent.xyz/box-common@^1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@decent.xyz/box-common/-/box-common-1.0.16.tgz#291c944b6e69c141119a81a4d8f9ee18eb32cec5"
+  integrity sha512-xaNbbljzRf3YNV++3xedBkzhtLs59+4yxOSBbTKoDuPfGccJcjIwx7nEBb253gvq9QxypFrwkNvLJN/kq9BcRw==
 
-"@decent.xyz/box-hooks@./decent.xyz-box-hooks-1.0.47.tgz":
-  version "1.0.47"
-  resolved "./decent.xyz-box-hooks-1.0.47.tgz#64b42faf50e8c6aec9fcc24586af9dfa29705eee"
+"@decent.xyz/box-hooks@^1.0.48":
+  version "1.0.48"
+  resolved "https://registry.yarnpkg.com/@decent.xyz/box-hooks/-/box-hooks-1.0.48.tgz#fba279c78b43d7e4da39631c2c8dff604306006b"
+  integrity sha512-dj7XgiUI2OAz1jaw1ke2N4/E/s6aaFK3pXsZlk/CQ0kww1YYXz8ZwqGaE6DFvvuYfo6kx69xQ8Zl7x17gC5srA==
   dependencies:
-    "@decent.xyz/box-common" "../decent.xyz-box-common-1.0.15.tgz"
+    "@decent.xyz/box-common" "^1.0.0"
 
 "@emotion/is-prop-valid@^0.8.2":
   version "0.8.8"
