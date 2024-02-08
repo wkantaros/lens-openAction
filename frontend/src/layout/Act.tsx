@@ -36,7 +36,8 @@ const ActionBox = ({
   const { data: walletClient } = useWalletClient();
 
   // we can fetch the params needed to call getActionArgs from the post itself
-  const [contract, token, dstChain, cost, signature] = fetchParams(post)!;
+  const [contract, , token, dstChain, cost, signature, platformName] =
+    fetchParams(post)!;
   const dstChainId = parseInt(dstChain.toString());
 
   // call this hook from @decent.xyz/box-hooks to get the actionModuleData
@@ -223,6 +224,7 @@ const ActionBox = ({
         <p>{`Address: ${contract}`}</p>
         <p>{`Chain: ${dstChain}`}</p>
         <p>{`Cost ${formatUnits(cost, 18)}`}</p>
+        <p>Platform Name: {platformName}</p>
       </div>
       {profileId && (
         <Button

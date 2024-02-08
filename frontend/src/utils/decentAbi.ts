@@ -120,10 +120,12 @@ export const decentAbi = [
     ],
     outputs: [
       { name: 'targetContract', type: 'address', internalType: 'address' },
+      { name: 'tokenId', type: 'uint256', internalType: 'uint256' },
       { name: 'paymentToken', type: 'address', internalType: 'address' },
       { name: 'chainId', type: 'uint256', internalType: 'uint256' },
       { name: 'cost', type: 'uint256', internalType: 'uint256' },
       { name: 'signature', type: 'bytes', internalType: 'bytes' },
+      { name: 'platformName', type: 'bytes', internalType: 'bytes' },
     ],
     stateMutability: 'view',
   },
