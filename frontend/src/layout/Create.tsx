@@ -48,6 +48,8 @@ export const Create = () => {
       [
         // contract address of call (i.e. your nft address)
         { type: 'address' },
+        // the token id if 1155, 0 if optional/unwanted
+        { type: 'uint256' },
         // the payment token for the action (i.e.mint) zeroAddress if cost is native or free
         { type: 'address' },
         // chainId of that contract (137 if your nft is on polygon, 10 if op, etc)
@@ -59,13 +61,17 @@ export const Create = () => {
         // i.e. 'function mint(address to, uint256 numberOfTokens)'
         // note: can use getCommonSignatureFromString to simplify process
         { type: 'bytes' },
+        // platform name
+        { type: 'bytes' },
       ],
       [
         nftAddress as `0x${string}`,
+        0n,
         zeroAddress,
         BigInt(dstChainId),
         parseUnits(cost, 18),
         encodePacked(['string'], [nftSignature]),
+        encodePacked(['string'], ['ExampleRepo']),
       ]
     );
 

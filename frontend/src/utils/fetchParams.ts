@@ -13,9 +13,11 @@ export const fetchParams = (post: PostCreatedEventFormatted) => {
   const decodedInitData = decodeAbiParameters(
     [
       { type: 'address' },
+      { type: 'uint256' },
       { type: 'address' },
       { type: 'uint256' },
       { type: 'uint256' },
+      { type: 'string' },
       { type: 'string' },
     ],
     actionModuleInitData

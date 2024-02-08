@@ -32,7 +32,7 @@ export const uiConfig: UiConfig =
   network === 'polygon'
     ? {
         openActionContractAddress: '0x7c4fAeef5ba47a437DFBaB57C016c1E706F56fcf',
-        openActionContractStartBlock: 52127053,
+        openActionContractStartBlock: 53241942,
         lensHubProxyAddress: '0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d',
         collectActionContractAddress:
           '0x0D90C58cBe787CD70B5Effe94Ce58185D72143fB',
@@ -43,8 +43,8 @@ export const uiConfig: UiConfig =
           import.meta.env.VITE_ALCHEMY_POLYGON_API_KEY
         }`,
         decentOpenActionContractAddress:
-          '0x99Cd5A6e51C85CCc63BeC61A177003A551953628',
-        decentStartBlock: 52127054,
+          '0x14860D0495CAF16914Db10117D4111AC4Da2F0a5',
+        decentStartBlock: 53241942,
         wMatic: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
         // test nfts
         nfts: {
@@ -54,7 +54,7 @@ export const uiConfig: UiConfig =
       }
     : {
         openActionContractAddress: '0x038D178a5aF79fc5BdbB436daA6B9144c669A93F',
-        openActionContractStartBlock: 44583310,
+        openActionContractStartBlock: 45661514,
         lensHubProxyAddress: '0x4fbffF20302F3326B20052ab9C217C44F6480900',
         collectActionContractAddress:
           '0x4FdAae7fC16Ef41eAE8d8f6578d575C9d64722f2',
@@ -65,8 +65,8 @@ export const uiConfig: UiConfig =
           import.meta.env.VITE_ALCHEMY_MUMBAI_API_KEY
         }`,
         decentOpenActionContractAddress:
-          '0x48Cc077E082365F1be696cAad2ccF91cEb08D9f9',
-        decentStartBlock: 44583310,
+          '0xe310b5Ed0B3c19B1F0852Ce985a4C38BAE738FDb',
+        decentStartBlock: 45661514,
         wMatic: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
         // test nfts
         nfts: {
