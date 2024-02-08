@@ -58,7 +58,6 @@ export const DecentOAProvider: FC<DecentOAProviderProps> = ({ children }) => {
     }
 
     const startBlock = uiConfig.decentStartBlock;
-    console.log('i am starting here', startBlock);
 
     const currentBlock = await publicClient({
       chainId,
@@ -120,7 +119,6 @@ export const DecentOAProvider: FC<DecentOAProviderProps> = ({ children }) => {
       );
     }
 
-    // filtering out 2 open actions I misconfigured
     const allPostEvents = Array.from(postEventsMap.values());
     const allDecentInitEvents = Array.from(decentInitEventsMap.values());
     console.log(allDecentInitEvents);
