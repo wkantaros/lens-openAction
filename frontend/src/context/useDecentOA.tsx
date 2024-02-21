@@ -21,7 +21,7 @@ interface DecentOAProviderProps {
   children: ReactNode;
 }
 
-// very basic example on how to query events
+// very basic example on how to pickup events
 export const DecentOAProvider: FC<DecentOAProviderProps> = ({ children }) => {
   const [handle, setHandle] = useState<string | undefined>();
   const [profileId, setProfileId] = useState<number | undefined>();
