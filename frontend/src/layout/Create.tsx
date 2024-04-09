@@ -7,7 +7,7 @@ import {
   zeroAddress,
 } from 'viem';
 import { currChainId, uiConfig } from '../utils/constants';
-import { lensHubAbi } from '../utils/lensHubAbi';
+import { lensHubAbi } from '../utils/abis/lensHubAbi';
 import { useWalletClient } from 'wagmi';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -27,14 +27,14 @@ export const Create = () => {
   const [freeCollect, setFreeCollect] = useState<boolean>(false);
   const [txHash, setTxHash] = useState<string | undefined>();
   const [uri, setURI] = useState<string>(
-    'https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/University_of_Rhode_Island_seal.svg/150px-University_of_Rhode_Island_seal.svg.png'
+    'https://upload.wikimedia.org/wikipedia/commons/1/17/University_of_Virginia_seal.svg'
   );
   const [nftType, setNftType] = useState<string>('Decent');
-  const [dstChainId, setDstChainId] = useState<number>(ChainId.POLYGON);
+  const [dstChainId, setDstChainId] = useState<number>(ChainId.ARBITRUM);
   const [nftAddress, setNftAddress] = useState<string>(
-    uiConfig.nfts.maticNftCost0_1
+    uiConfig.nfts.arbitrumNft0_00005
   );
-  const [cost, setCost] = useState<string>('0.1');
+  const [cost, setCost] = useState<string>('0.00005');
 
   const createPost = async () => {
     // this can be done in a handful of ways either by calling

@@ -10,7 +10,7 @@ import {
 import { useWalletClient } from 'wagmi';
 import { publicClient } from '../main';
 import { currChainId, mode, uiConfig } from '../utils/constants';
-import { lensHubAbi } from '../utils/lensHubAbi';
+import { lensHubAbi } from '../utils/abis/lensHubAbi';
 import { serializeLink } from '../utils/serializeLink';
 import { PostCreatedEventFormatted } from '../utils/types';
 import { useDecentOA } from '@/context/DecentOAContext';
@@ -18,6 +18,9 @@ import { fetchParams } from '@/utils/fetchParams';
 import { ActionType } from '@decent.xyz/box-common';
 import { UseBoxActionArgs, useBoxAction } from '@decent.xyz/box-hooks';
 import { approveToken, getAllowance } from '@/tokenUtils';
+import { signPermitSignature } from '@/utils/permit2';
+import { updateWraperParams } from '@/utils/updateWrapperParams';
+import { decentAbi } from '@/utils/abis/decentAbi';
 //import { ProfileId } from "@lens-protocol/metadata";
 
 const ActionBox = ({
@@ -73,6 +76,26 @@ const ActionBox = ({
     // get the actionModuleData from response
     const encodedActionData = resp.actionResponse!.arbitraryData.lensActionData;
 
+    const amount = resp.actionResponse?.tokenPayment?.amount || 0n;
+    const token =
+      resp.actionResponse?.tokenPayment?.tokenAddress || zeroAddress;
+
+    const { signature, nonce, deadline } = await signPermitSignature(
+      walletClient!,
+      amount,
+      token as `0x${string}`
+    );
+    // console.log('i made it here', signature);
+    // console.log(encodedActionData);
+    // updateWraperParams({ signature: signature!, data: encodedActionData });
+    const sigActionData = updateWraperParams({
+      deadline: BigInt(deadline),
+      nonce,
+      signature,
+      data: encodedActionData,
+      chainId: dstChainId,
+    });
+
     const args = {
       publicationActedProfileId: BigInt(post.args.postParams.profileId),
       publicationActedId: BigInt(post.args.pubId),
@@ -80,9 +103,22 @@ const ActionBox = ({
       referrerProfileIds: [],
       referrerPubIds: [],
       actionModuleAddress: uiConfig.decentOpenActionContractAddress,
-      actionModuleData: encodedActionData as `0x${string}`,
+      actionModuleData: sigActionData as `0x${string}`,
     };
 
+    // const decentArgs = {
+    //   publicationActedProfileId: BigInt(post.args.postParams.profileId),
+    //   publicationActedId: BigInt(post.args.pubId),
+    //   actorProfileId: BigInt(profileId!),
+    //   actorProfileOwner:
+    //     `0x755bdaE53b234C6D1b7Be9cE7F316CF8f03F2533` as `0x${string}`,
+    //   transactionExecutor:
+    //     `0x755bdaE53b234C6D1b7Be9cE7F316CF8f03F2533` as `0x${string}`,
+    //   referrerProfileIds: [],
+    //   referrerPubIds: [],
+    //   referrerPubTypes: [],
+    //   actionModuleData: sigActionData as `0x${string}`,
+    // };
     // swap lensHubAbi for publicActProxy address if desired and switch function to 'publicFreeAct'
     // https://polygonscan.com/address/0x53582b1b7BE71622E7386D736b6baf87749B7a2B#writeContract
     // for more information, checkout https://docs.lens.xyz/docs/deployed-contract-addresses
@@ -91,39 +127,44 @@ const ActionBox = ({
       functionName: 'act',
       args: [args],
     });
+    // const calldata = encodeFunctionData({
+    //   abi: decentAbi,
+    //   functionName: 'processPublicationAction',
+    //   args: [decentArgs],
+    // });
 
     setCreateState('PENDING IN WALLET');
     try {
       // approve token (always WMATIC for now but will be more flexible later)
-      if (
-        resp.actionResponse?.tokenPayment?.tokenAddress &&
-        resp.actionResponse.tokenPayment.tokenAddress != zeroAddress
-      ) {
-        const amountApproved = await getAllowance({
-          user: address!,
-          spender: uiConfig.decentOpenActionContractAddress,
-          token: resp.actionResponse.tokenPayment.tokenAddress as `0x${string}`,
-        });
-        if (
-          amountApproved < (resp.actionResponse?.tokenPayment?.amount || 0n)
-        ) {
-          const approveHash = await approveToken({
-            token: uiConfig.wMatic,
-            spender: uiConfig.decentOpenActionContractAddress,
-            amount: resp.actionResponse?.tokenPayment?.amount || 0n,
-          });
-          setCreateState('APPROVING TOKEN');
-          if (!approveHash) {
-            console.log('not approved!');
-            setCreateState('');
-            return;
-          }
-          const approveResult = await publicClient({
-            chainId: currChainId,
-          }).waitForTransactionReceipt({ hash: approveHash });
-          console.log('approved!', approveResult);
-        }
-      }
+      // if (
+      //   resp.actionResponse?.tokenPayment?.tokenAddress &&
+      //   resp.actionResponse.tokenPayment.tokenAddress != zeroAddress
+      // ) {
+      //   const amountApproved = await getAllowance({
+      //     user: address!,
+      //     spender: uiConfig.decentOpenActionContractAddress,
+      //     token: resp.actionResponse.tokenPayment.tokenAddress as `0x${string}`,
+      //   });
+      //   if (
+      //     amountApproved < (resp.actionResponse?.tokenPayment?.amount || 0n)
+      //   ) {
+      //     const approveHash = await approveToken({
+      //       token: uiConfig.wMatic,
+      //       spender: uiConfig.decentOpenActionContractAddress,
+      //       amount: resp.actionResponse?.tokenPayment?.amount || 0n,
+      //     });
+      //     setCreateState('APPROVING TOKEN');
+      //     if (!approveHash) {
+      //       console.log('not approved!');
+      //       setCreateState('');
+      //       return;
+      //     }
+      //     const approveResult = await publicClient({
+      //       chainId: currChainId,
+      //     }).waitForTransactionReceipt({ hash: approveHash });
+      //     console.log('approved!', approveResult);
+      //   }
+      // }
       const hash = await walletClient!.sendTransaction({
         to: uiConfig.lensHubProxyAddress,
         account: address,

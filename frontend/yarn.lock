@@ -290,17 +290,20 @@
     stream-browserify "^3.0.0"
     util "^0.12.4"
 
-"@decent.xyz/box-common@^1.0.0", "@decent.xyz/box-common@^1.0.16":
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/@decent.xyz/box-common/-/box-common-1.0.16.tgz#291c944b6e69c141119a81a4d8f9ee18eb32cec5"
-  integrity sha512-xaNbbljzRf3YNV++3xedBkzhtLs59+4yxOSBbTKoDuPfGccJcjIwx7nEBb253gvq9QxypFrwkNvLJN/kq9BcRw==
+"@decent.xyz/box-common@./decent.xyz-box-common-2.0.7.tgz":
+  version "2.0.7"
+  uid "83438eab9ef51fd996398831f21af5dd03bf3538"
+  resolved "./decent.xyz-box-common-2.0.7.tgz#83438eab9ef51fd996398831f21af5dd03bf3538"
 
-"@decent.xyz/box-hooks@^1.0.48":
-  version "1.0.48"
-  resolved "https://registry.yarnpkg.com/@decent.xyz/box-hooks/-/box-hooks-1.0.48.tgz#fba279c78b43d7e4da39631c2c8dff604306006b"
-  integrity sha512-dj7XgiUI2OAz1jaw1ke2N4/E/s6aaFK3pXsZlk/CQ0kww1YYXz8ZwqGaE6DFvvuYfo6kx69xQ8Zl7x17gC5srA==
+"@decent.xyz/box-common@file:decent.xyz-box-common-2.0.7.tgz":
+  version "2.0.7"
+  resolved "file:decent.xyz-box-common-2.0.7.tgz#83438eab9ef51fd996398831f21af5dd03bf3538"
+
+"@decent.xyz/box-hooks@file:decent.xyz-box-hooks-2.0.7.tgz":
+  version "2.0.7"
+  resolved "file:decent.xyz-box-hooks-2.0.7.tgz#b91354ab92d819d15aa91b1791ba12ae26e1c67f"
   dependencies:
-    "@decent.xyz/box-common" "^1.0.0"
+    "@decent.xyz/box-common" "./decent.xyz-box-common-2.0.7.tgz"
 
 "@emotion/is-prop-valid@^0.8.2":
   version "0.8.8"
@@ -1676,6 +1679,14 @@
   version "1.2.0"
   resolved "https://registry.npmjs.org/@ungap/structured-clone/-/structured-clone-1.2.0.tgz"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
+
+"@uniswap/permit2-sdk@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@uniswap/permit2-sdk/-/permit2-sdk-1.2.0.tgz#ed86440a87a6c318169c8e6f161fc263ad040891"
+  integrity sha512-Ietv3FxN7+RCXcPSED/i/8b0a2GUZrMdyX05k3FsSztvYKyPFAMS/hBXojF0NZqYB1bHecqYc7Ej+7tV/rdYXg==
+  dependencies:
+    ethers "^5.3.1"
+    tiny-invariant "^1.3.1"
 
 "@vitejs/plugin-react@^4.0.3":
   version "4.1.0"
@@ -3184,7 +3195,7 @@ eth-rpc-errors@^4.0.2:
   dependencies:
     fast-safe-stringify "^2.0.6"
 
-ethers@^5.7.2:
+ethers@^5.3.1, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.npmjs.org/ethers/-/ethers-5.7.2.tgz"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -5111,6 +5122,11 @@ thread-stream@^0.15.1:
   version "2.3.8"
   resolved "https://registry.npmjs.org/through/-/through-2.3.8.tgz"
   integrity sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==
+
+tiny-invariant@^1.3.1:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.3.3.tgz#46680b7a873a0d5d10005995eb90a70d74d60127"
+  integrity sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==
 
 to-fast-properties@^2.0.0:
   version "2.0.0"
