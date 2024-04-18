@@ -33,13 +33,6 @@ export const constructPermit2Sig = async ({
   from: Address;
 }) => {
   const spender = uiConfig.decentOpenActionContractAddress;
-  const { nonce } = await getAllowanceData({
-    token,
-    owner: from,
-    spender,
-  });
-  console.log(nonce);
-
   const PERMIT2_DOMAIN_NAME = 'Permit2';
   const permit2Address = '0x000000000022D473030F116dDEE9F6B43aC78BA3';
   const domain = {
@@ -71,7 +64,7 @@ export const constructPermit2Sig = async ({
       amount,
     },
     spender: spender as `0x${string}`,
-    nonce: 2n,
+    nonce: BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER) + 1),
     deadline: toDeadline(PERMIT_SIG_EXPIRATION),
   } as const;
   return { domain, types: PERMIT_TRANSFER_FROM_TYPES, values: permitTransfer };

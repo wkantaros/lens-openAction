@@ -30,11 +30,18 @@ export const Create = () => {
     'https://upload.wikimedia.org/wikipedia/commons/1/17/University_of_Virginia_seal.svg'
   );
   const [nftType, setNftType] = useState<string>('Decent');
-  const [dstChainId, setDstChainId] = useState<number>(ChainId.ARBITRUM);
+  const [dstChainId, setDstChainId] = useState<number>(ChainId.POLYGON);
   const [nftAddress, setNftAddress] = useState<string>(
-    uiConfig.nfts.arbitrumNft0_00005
+    uiConfig.nfts.polygonNft0_1
   );
-  const [cost, setCost] = useState<string>('0.00005');
+  const [cost, setCost] = useState<string>('0.1');
+  // other example nft
+  // const [nftType, setNftType] = useState<string>('Decent');
+  // const [dstChainId, setDstChainId] = useState<number>(ChainId.ARBITRUM);
+  // const [nftAddress, setNftAddress] = useState<string>(
+  //   uiConfig.nfts.arbitrumNft0_00005
+  // );
+  // const [cost, setCost] = useState<string>('0.00005');
 
   const createPost = async () => {
     // this can be done in a handful of ways either by calling
@@ -43,37 +50,41 @@ export const Create = () => {
     //                               in arbitrary function signatures / no dropdown
     const nftSignature: string = getCommonSignatureFromString(nftType);
 
+    if (!profileId) return;
     // our encoded abi parameters
-    const encodedInitData = encodeAbiParameters(
-      [
-        // contract address of call (i.e. your nft address)
-        { type: 'address' },
-        // the token id if 1155, 0 if optional/unwanted
-        { type: 'uint256' },
-        // the payment token for the action (i.e.mint) zeroAddress if cost is native or free
-        { type: 'address' },
-        // chainId of that contract (137 if your nft is on polygon, 10 if op, etc)
-        // can use ChainId enum from @decent.xyz/box-common for convenience
-        { type: 'uint256' },
-        // cost of the function call (0 if free)
-        { type: 'uint256' },
-        // the function signature
-        // i.e. 'function mint(address to, uint256 numberOfTokens)'
-        // note: can use getCommonSignatureFromString to simplify process
-        { type: 'bytes' },
-        // platform name
-        { type: 'bytes' },
-      ],
-      [
-        nftAddress as `0x${string}`,
-        0n,
-        zeroAddress,
-        BigInt(dstChainId),
-        parseUnits(cost, 18),
-        encodePacked(['string'], [nftSignature]),
-        encodePacked(['string'], ['ExampleRepo']),
-      ]
-    );
+    const InitData = [
+      {
+        name: 'data',
+        type: 'tuple',
+        internalType: 'struct InitializedAction',
+        components: [
+          { name: 'targetContract', type: 'address', internalType: 'address' },
+          { name: 'tokenId', type: 'uint256', internalType: 'uint256' },
+          { name: 'paymentToken', type: 'address', internalType: 'address' },
+          { name: 'chainId', type: 'uint256', internalType: 'uint256' },
+          { name: 'cost', type: 'uint256', internalType: 'uint256' },
+          {
+            name: 'publishingClientProfileId',
+            type: 'uint256',
+            internalType: 'uint256',
+          },
+          { name: 'signature', type: 'bytes', internalType: 'bytes' },
+          { name: 'platformName', type: 'bytes', internalType: 'bytes' },
+        ],
+      },
+    ] as const;
+    const encodedInitData = encodeAbiParameters(InitData, [
+      {
+        targetContract: nftAddress as `0x${string}`,
+        tokenId: 0n,
+        paymentToken: zeroAddress,
+        chainId: BigInt(dstChainId),
+        cost: parseUnits(cost, 18),
+        publishingClientProfileId: BigInt(profileId),
+        signature: encodePacked(['string'], [nftSignature]),
+        platformName: encodePacked(['string'], ['ExampleRepo']),
+      },
+    ]);
 
     const actionModulesInitDatas = [encodedInitData];
     // get the decent open action

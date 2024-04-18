@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import {
   encodeAbiParameters,
   encodeFunctionData,
   formatUnits,
+  hexToString,
   zeroAddress,
 } from 'viem';
 import { useWalletClient } from 'wagmi';
@@ -39,8 +39,14 @@ const ActionBox = ({
   const { data: walletClient } = useWalletClient();
 
   // we can fetch the params needed to call getActionArgs from the post itself
-  const [contract, , token, dstChain, cost, signature, platformName] =
-    fetchParams(post)!;
+  const {
+    targetContract: contract,
+    cost,
+    signature,
+    chainId: dstChain,
+    paymentToken: dstToken,
+    platformName,
+  } = fetchParams(post)!;
   const dstChainId = parseInt(dstChain.toString());
 
   // call this hook from @decent.xyz/box-hooks to get the actionModuleData
@@ -56,38 +62,38 @@ const ActionBox = ({
         isNative: true,
         amount: cost,
       },
-      signature,
+      signature: hexToString(signature),
       args: [address, 1n],
     },
     srcChainId: currChainId,
     sender: address!,
     slippage: 3, // 1%
     srcToken: uiConfig.wMatic,
-    dstToken: token,
+    dstToken,
     dstChainId: dstChainId,
   };
 
   // response w everything needed to call open action
   const resp = useBoxAction(getActionArgs);
+  console.log(resp);
 
   const executeDecentOA = async (post: PostCreatedEventFormatted) => {
+    console.log('i am here pls', resp);
     if (!resp || resp.isLoading) return;
 
     // get the actionModuleData from response
     const encodedActionData = resp.actionResponse!.arbitraryData.lensActionData;
+    // console.log(resp);
 
-    const amount = resp.actionResponse?.tokenPayment?.amount || 0n;
-    const token =
-      resp.actionResponse?.tokenPayment?.tokenAddress || zeroAddress;
+    const amountNeeded = resp.actionResponse?.tokenPayment?.amount || 0n;
+    const tokenNeeded = (resp.actionResponse?.tokenPayment?.tokenAddress ||
+      zeroAddress) as `0x${string}`;
 
     const { signature, nonce, deadline } = await signPermitSignature(
       walletClient!,
-      amount,
-      token as `0x${string}`
+      amountNeeded,
+      tokenNeeded as `0x${string}`
     );
-    // console.log('i made it here', signature);
-    // console.log(encodedActionData);
-    // updateWraperParams({ signature: signature!, data: encodedActionData });
     const sigActionData = updateWraperParams({
       deadline: BigInt(deadline),
       nonce,
@@ -100,25 +106,12 @@ const ActionBox = ({
       publicationActedProfileId: BigInt(post.args.postParams.profileId),
       publicationActedId: BigInt(post.args.pubId),
       actorProfileId: BigInt(profileId!),
-      referrerProfileIds: [],
-      referrerPubIds: [],
+      referrerProfileIds: [1n],
+      referrerPubIds: [0n],
       actionModuleAddress: uiConfig.decentOpenActionContractAddress,
       actionModuleData: sigActionData as `0x${string}`,
+      // actionModuleData: encodedActionData,
     };
-
-    // const decentArgs = {
-    //   publicationActedProfileId: BigInt(post.args.postParams.profileId),
-    //   publicationActedId: BigInt(post.args.pubId),
-    //   actorProfileId: BigInt(profileId!),
-    //   actorProfileOwner:
-    //     `0x755bdaE53b234C6D1b7Be9cE7F316CF8f03F2533` as `0x${string}`,
-    //   transactionExecutor:
-    //     `0x755bdaE53b234C6D1b7Be9cE7F316CF8f03F2533` as `0x${string}`,
-    //   referrerProfileIds: [],
-    //   referrerPubIds: [],
-    //   referrerPubTypes: [],
-    //   actionModuleData: sigActionData as `0x${string}`,
-    // };
     // swap lensHubAbi for publicActProxy address if desired and switch function to 'publicFreeAct'
     // https://polygonscan.com/address/0x53582b1b7BE71622E7386D736b6baf87749B7a2B#writeContract
     // for more information, checkout https://docs.lens.xyz/docs/deployed-contract-addresses
@@ -127,31 +120,25 @@ const ActionBox = ({
       functionName: 'act',
       args: [args],
     });
-    // const calldata = encodeFunctionData({
-    //   abi: decentAbi,
-    //   functionName: 'processPublicationAction',
-    //   args: [decentArgs],
-    // });
+    const toAddress = uiConfig.lensHubProxyAddress;
 
     setCreateState('PENDING IN WALLET');
     try {
+      // this example of how would do approve (no permit2 sig)
       // approve token (always WMATIC for now but will be more flexible later)
-      // if (
-      //   resp.actionResponse?.tokenPayment?.tokenAddress &&
-      //   resp.actionResponse.tokenPayment.tokenAddress != zeroAddress
-      // ) {
+      // console.log('token', tokenNeeded, amountNeeded);
+      // if (tokenNeeded != zeroAddress) {
       //   const amountApproved = await getAllowance({
       //     user: address!,
       //     spender: uiConfig.decentOpenActionContractAddress,
-      //     token: resp.actionResponse.tokenPayment.tokenAddress as `0x${string}`,
+      //     token: tokenNeeded,
       //   });
-      //   if (
-      //     amountApproved < (resp.actionResponse?.tokenPayment?.amount || 0n)
-      //   ) {
+      //   console.log(amountApproved);
+      //   if (amountApproved < amountNeeded) {
       //     const approveHash = await approveToken({
-      //       token: uiConfig.wMatic,
+      //       token: tokenNeeded,
       //       spender: uiConfig.decentOpenActionContractAddress,
-      //       amount: resp.actionResponse?.tokenPayment?.amount || 0n,
+      //       amount: amountNeeded,
       //     });
       //     setCreateState('APPROVING TOKEN');
       //     if (!approveHash) {
@@ -166,62 +153,7 @@ const ActionBox = ({
       //   }
       // }
       const hash = await walletClient!.sendTransaction({
-        to: uiConfig.lensHubProxyAddress,
-        account: address,
-        data: calldata as `0x${string}`,
-      });
-      setCreateState('PENDING IN MEMPOOL');
-      setTxHash(hash);
-      const result = await publicClient({
-        chainId: currChainId,
-      }).waitForTransactionReceipt({ hash });
-      if (result.status === 'success') {
-        setCreateState('SUCCESS');
-        refresh();
-      } else {
-        setCreateState('CREATE TXN REVERTED');
-      }
-    } catch (e) {
-      setCreateState(`ERROR: ${e instanceof Error ? e.message : String(e)}`);
-    }
-  };
-
-  const executeCollect = async (post: PostCreatedEventFormatted) => {
-    const baseFeeCollectModuleTypes = [
-      { type: 'address' },
-      { type: 'uint256' },
-    ];
-
-    const encodedBaseFeeCollectModuleInitData = encodeAbiParameters(
-      baseFeeCollectModuleTypes,
-      [zeroAddress, 0]
-    );
-
-    const encodedCollectActionData = encodeAbiParameters(
-      [{ type: 'address' }, { type: 'bytes' }],
-      [address!, encodedBaseFeeCollectModuleInitData]
-    );
-
-    const args = {
-      publicationActedProfileId: BigInt(post.args.postParams.profileId || 0),
-      publicationActedId: BigInt(post.args.pubId),
-      actorProfileId: BigInt(profileId || 0),
-      referrerProfileIds: [],
-      referrerPubIds: [],
-      actionModuleAddress: uiConfig.collectActionContractAddress,
-      actionModuleData: encodedCollectActionData as `0x${string}`,
-    };
-
-    const calldata = encodeFunctionData({
-      abi: lensHubAbi,
-      functionName: 'act',
-      args: [args],
-    });
-
-    setCreateState('PENDING IN WALLET');
-    try {
-      const hash = await walletClient!.sendTransaction({
-        to: uiConfig.lensHubProxyAddress,
+        to: toAddress,
         account: address,
         data: calldata as `0x${string}`,
       });
@@ -265,7 +197,7 @@ const ActionBox = ({
         <p>{`Address: ${contract}`}</p>
         <p>{`Chain: ${dstChain}`}</p>
         <p>{`Cost ${formatUnits(cost, 18)}`}</p>
-        <p>Platform Name: {platformName}</p>
+        <p>Platform Name: {hexToString(platformName)}</p>
       </div>
       {profileId && (
         <Button
@@ -276,14 +208,6 @@ const ActionBox = ({
           Mint
         </Button>
       )}
-      {profileId &&
-        post.args.postParams.actionModules.includes(
-          uiConfig.collectActionContractAddress
-        ) && (
-          <Button className="mt-3" onClick={() => executeCollect(post)}>
-            Collect Post
-          </Button>
-        )}
       {createState && (
         <p className="mt-2 text-primary create-state-text">{createState}</p>
       )}
