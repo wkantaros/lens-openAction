@@ -10,12 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@decent.xyz/box-common": "^1.0.16",
-    "@decent.xyz/box-hooks": "^1.0.48",
+    "@decent.xyz/box-common": "file:decent.xyz-box-common-2.0.7.tgz",
+    "@decent.xyz/box-hooks": "file:decent.xyz-box-hooks-2.0.7.tgz",
     "@lens-protocol/metadata": "^1.0.0",
     "@lens-protocol/react-web": "^2.0.0-alpha.22",
     "@lens-protocol/wagmi": "^3.0.0-alpha.19",
     "@radix-ui/react-slot": "^1.0.2",
+    "@uniswap/permit2-sdk": "^1.2.0",
     "@web3modal/wagmi": "^3.5.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",

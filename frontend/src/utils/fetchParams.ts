@@ -1,4 +1,4 @@
-import { Address, decodeAbiParameters } from 'viem';
+import { Address, decodeAbiParameters, hexToString } from 'viem';
 import { uiConfig } from './constants';
 import { PostCreatedEventFormatted } from './types';
 
@@ -10,17 +10,31 @@ export const fetchParams = (post: PostCreatedEventFormatted) => {
     index
   ] as Address;
 
+  const InitData = [
+    {
+      name: 'data',
+      type: 'tuple',
+      internalType: 'struct InitializedAction',
+      components: [
+        { name: 'targetContract', type: 'address', internalType: 'address' },
+        { name: 'tokenId', type: 'uint256', internalType: 'uint256' },
+        { name: 'paymentToken', type: 'address', internalType: 'address' },
+        { name: 'chainId', type: 'uint256', internalType: 'uint256' },
+        { name: 'cost', type: 'uint256', internalType: 'uint256' },
+        {
+          name: 'publishingClientProfileId',
+          type: 'uint256',
+          internalType: 'uint256',
+        },
+        { name: 'signature', type: 'bytes', internalType: 'bytes' },
+        { name: 'platformName', type: 'bytes', internalType: 'bytes' },
+      ],
+    },
+  ] as const;
+
   const decodedInitData = decodeAbiParameters(
-    [
-      { type: 'address' },
-      { type: 'uint256' },
-      { type: 'address' },
-      { type: 'uint256' },
-      { type: 'uint256' },
-      { type: 'string' },
-      { type: 'string' },
-    ],
+    InitData,
     actionModuleInitData
-  );
+  )[0];
   return decodedInitData;
 };

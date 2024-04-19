@@ -11,8 +11,8 @@ import {
 } from '../utils/types';
 import { currChainId, network, uiConfig } from '../utils/constants';
 import { publicClient } from '../main';
-import { lensHubEventsAbi } from '../utils/lensHubEventsAbi';
-import { decentAbi } from '@/utils/decentAbi';
+import { lensHubEventsAbi } from '../utils/abis/lensHubEventsAbi';
+import { decentAbi } from '@/utils/abis/decentAbi';
 import { disconnect } from 'wagmi/actions';
 import DecentOAContext from './DecentOAContext';
 import { ChainId } from '@decent.xyz/box-common';
