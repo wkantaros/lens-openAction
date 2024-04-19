@@ -43,14 +43,6 @@ export const uiConfig: UiConfig =
           import.meta.env.VITE_ALCHEMY_POLYGON_API_KEY
         }`,
         decentOpenActionContractAddress:
-          // '0x1692a68825C6F240984d208f95E5CcEDcc6C17a0', // old
-          // '0x7925484feA117eB32bc868e0AE0F73DdDA8b960a', // new - doesn't work (idt)
-          // '0xA70aE6688388b9a1e7C8321DB261fbA091e1c996', // new - w math, works
-          // '0xcCB859B3a00B46128343d265d6B03f9e3Cb54983', // new - works but not from proxy
-          // '0x43D499b7459b8e044579a7d7018bDA01D1F2c731',
-          // '0xB751A8184Cc8891Cf71b06f7d4b1657799f2DE46', // works without only hub
-          // '0xA117BEc22a9a2f96725D986941899f90B705c67D', // new works (permit2 wonky tho)
-          // '0xdC6C8f66C26511e78E7B0265EE956Bb19119776b', // newest
           '0x2357a69BAF2584cf25A3B9bAA2c7eE6063cb8B40',
         decentStartBlock: 55979715,
         wMatic: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
