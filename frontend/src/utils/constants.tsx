@@ -32,7 +32,7 @@ export const uiConfig: UiConfig =
   network === 'polygon'
     ? {
         openActionContractAddress: '0x7c4fAeef5ba47a437DFBaB57C016c1E706F56fcf',
-        openActionContractStartBlock: 55979715,
+        openActionContractStartBlock: 56690978,
         lensHubProxyAddress: '0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d',
         collectActionContractAddress:
           '0x0D90C58cBe787CD70B5Effe94Ce58185D72143fB',
@@ -43,8 +43,8 @@ export const uiConfig: UiConfig =
           import.meta.env.VITE_ALCHEMY_POLYGON_API_KEY
         }`,
         decentOpenActionContractAddress:
-          '0x2357a69BAF2584cf25A3B9bAA2c7eE6063cb8B40',
-        decentStartBlock: 55979715,
+          '0x028f6aeE3CF9e1cA725f4C47d9460801b6c7508A',
+        decentStartBlock: 56690978,
         wMatic: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
         // test nfts
         nfts: {

@@ -32,7 +32,7 @@ export const Create = () => {
   const [nftType, setNftType] = useState<string>('Decent');
   const [dstChainId, setDstChainId] = useState<number>(ChainId.POLYGON);
   const [nftAddress, setNftAddress] = useState<string>(
-    uiConfig.nfts.polygonNft0_1
+    uiConfig.nfts.maticNftCost0_1
   );
   const [cost, setCost] = useState<string>('0.1');
   // other example nft
